@@ -3,204 +3,199 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use App\Models\Category;
+use App\Models\Tag;
+use App\Models\Post;
 use App\Models\Service;
-use App\Models\Portfolio;
+use App\Models\Event;
 use App\Models\Testimonial;
-use App\Models\BlogPost;
+use App\Models\Certificate;
+use App\Models\Gallery;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        \App\Models\User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('admin'),
-            'is_admin' => true,
-        ]);
-
+        // Admin User
+        $user = User::updateOrCreate(
+            ['email' => 'admin@portfolio.com'],
+            [
+                'name'     => 'Usman Younas',
+                'email'    => 'admin@admin.com',
+                'password' => Hash::make('admin'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Categories
         $categories = [
-            ['name' => 'Structural Welding', 'slug' => 'structural-welding', 'description' => 'Heavy-duty structural welding projects'],
-            ['name' => 'Metal Fabrication', 'slug' => 'metal-fabrication', 'description' => 'Custom metal fabrication work'],
-            ['name' => 'Artistic Welding', 'slug' => 'artistic-welding', 'description' => 'Creative and artistic metal work'],
-            ['name' => 'Repairs & Maintenance', 'slug' => 'repairs-maintenance', 'description' => 'Welding repairs and maintenance'],
-            ['name' => 'Industrial', 'slug' => 'industrial', 'description' => 'Industrial welding projects'],
+            ['name' => 'Teacher Training', 'description' => 'Articles about professional development for teachers'],
+            ['name' => 'Digital Learning', 'description' => 'EdTech, e-learning, and digital classroom strategies'],
+            ['name' => 'Motivation & Mindset', 'description' => 'Inspirational content for educators and learners'],
+            ['name' => 'Curriculum Design', 'description' => 'Lesson planning, curriculum frameworks, and design'],
+            ['name' => 'Leadership in Education', 'description' => 'Educational leadership and institutional management'],
         ];
-
         foreach ($categories as $cat) {
-            Category::create($cat);
+            Category::firstOrCreate(['name' => $cat['name']], $cat);
+        }
+
+        // Tags
+        $tagNames = ['Education', 'Teaching', 'Learning', 'Pakistan', 'Professional Development', 'EdTech', 'Classroom', 'Motivation', 'Curriculum', 'Leadership', 'Training', 'Workshop'];
+        foreach ($tagNames as $tag) {
+            Tag::firstOrCreate(['name' => $tag]);
         }
 
         // Services
         $services = [
             [
-                'title' => 'MIG Welding',
-                'slug' => 'mig-welding',
-                'description' => 'Metal Inert Gas welding for clean, precise joins on various metals.',
-                'full_description' => 'Our MIG welding services provide fast, clean, and efficient welding solutions perfect for both thick and thin materials. Ideal for automotive, manufacturing, and construction applications.',
-                'icon' => 'fas fa-fire',
-                'is_featured' => true,
-                'order' => 1,
+                'title'   => 'Teacher Training Programs',
+                'icon'    => 'bi-mortarboard-fill',
+                'excerpt' => 'Comprehensive professional development programs that transform teaching practices and enhance student outcomes.',
+                'description' => '<h3>About This Service</h3><p>Our teacher training programs are meticulously designed to equip educators with cutting-edge pedagogical strategies, classroom management techniques, and technology integration skills. We offer both in-person and online formats.</p><h3>What You Get</h3><p>Each participant receives personalized coaching, resource materials, and ongoing mentorship support. Our programs are aligned with national curriculum standards and international best practices.</p>',
+                'features'    => ['Evidence-based methodologies', 'Hands-on practice sessions', 'Peer learning communities', 'Certificate of completion', 'Post-training support'],
+                'deliverables' => ['Training manual & resources', 'Video recordings', 'Assessment tools', 'Follow-up coaching sessions'],
+                'sort_order'  => 1,
             ],
             [
-                'title' => 'TIG Welding',
-                'slug' => 'tig-welding',
-                'description' => 'Tungsten Inert Gas welding for high-precision, clean welds.',
-                'full_description' => 'TIG welding offers superior quality and precision, perfect for critical applications requiring the highest quality welds on stainless steel, aluminum, and exotic metals.',
-                'icon' => 'fas fa-bolt',
-                'is_featured' => true,
-                'order' => 2,
+                'title'   => 'Motivational Speaking',
+                'icon'    => 'bi-mic-fill',
+                'excerpt' => 'Inspiring keynotes and talks that motivate individuals and organizations to unlock their full potential.',
+                'description' => '<h3>About This Service</h3><p>Awais Iqbal Ch delivers powerful motivational talks for schools, universities, corporate organizations, and national conferences. Her talks blend personal stories, research insights, and actionable strategies.</p><h3>Popular Topics</h3><p>From "The Power of Growth Mindset" to "Building Resilient Classrooms," each talk is customized to the audience and their specific challenges.</p>',
+                'features'    => ['Customized content', 'Interactive Q&A sessions', 'Workbook for participants', 'Available in Urdu & English', 'Virtual and in-person options'],
+                'deliverables' => ['Customized presentation deck', 'Participant workbooks', 'Session recordings', 'Follow-up resources'],
+                'sort_order'  => 2,
             ],
             [
-                'title' => 'Stick Welding',
-                'slug' => 'stick-welding',
-                'description' => 'Versatile shielded metal arc welding for outdoor and heavy-duty applications.',
-                'full_description' => 'Also known as SMAW, stick welding is perfect for outdoor work, repair jobs, and heavy fabrication. Works well in windy conditions and on rusty or painted materials.',
-                'icon' => 'fas fa-burn',
-                'is_featured' => true,
-                'order' => 3,
+                'title'   => 'Digital Learning Consultancy',
+                'icon'    => 'bi-laptop-fill',
+                'excerpt' => 'Cutting-edge EdTech strategies and digital transformation for 21st-century classrooms and institutions.',
+                'description' => '<h3>About This Service</h3><p>In an era of rapid technological change, Awais Iqbal Ch helps schools and universities navigate the digital transformation journey. From LMS selection to blended learning design, she guides institutions through every step.</p>',
+                'features'    => ['EdTech needs assessment', 'LMS selection & setup', 'Blended learning design', 'Teacher digital literacy training', 'Ongoing technical support'],
+                'deliverables' => ['Digital transformation roadmap', 'LMS training sessions', 'E-learning content templates', 'Progress reports'],
+                'sort_order'  => 3,
             ],
             [
-                'title' => 'Metal Fabrication',
-                'slug' => 'metal-fabrication',
-                'description' => 'Custom metal fabrication from design to finished product.',
-                'full_description' => 'Complete fabrication services including cutting, bending, forming, and assembling metal structures to your specifications. From simple brackets to complex assemblies.',
-                'icon' => 'fas fa-tools',
-                'is_featured' => true,
-                'order' => 4,
-            ],
-            [
-                'title' => 'Structural Welding',
-                'slug' => 'structural-welding',
-                'description' => 'Certified structural welding for buildings and infrastructure.',
-                'full_description' => 'Certified structural welding services for commercial buildings, bridges, and infrastructure projects. All work meets or exceeds AWS D1.1 structural welding code requirements.',
-                'icon' => 'fas fa-building',
-                'is_featured' => false,
-                'order' => 5,
-            ],
-            [
-                'title' => 'Maintenance & Repairs',
-                'slug' => 'maintenance-repairs',
-                'description' => 'Expert welding repairs and preventive maintenance services.',
-                'full_description' => 'Professional repair and maintenance services for industrial equipment, machinery, and metal structures. Quick turnaround to minimize downtime.',
-                'icon' => 'fas fa-wrench',
-                'is_featured' => false,
-                'order' => 6,
+                'title'   => 'Education Consultancy',
+                'icon'    => 'bi-people-fill',
+                'excerpt' => 'Strategic guidance for educational institutions to enhance learning outcomes and operational excellence.',
+                'description' => '<h3>About This Service</h3><p>Awais Iqbal Ch provides comprehensive consulting services to schools, colleges, and educational NGOs. She helps institutions develop strategic plans, improve governance, and create cultures of continuous improvement.</p>',
+                'features'    => ['Institutional assessment', 'Strategic planning workshops', 'Policy development', 'Staff capacity building', 'Quality assurance frameworks'],
+                'deliverables' => ['Strategic plan document', 'Policy manuals', 'Training reports', 'Implementation timeline'],
+                'sort_order'  => 4,
             ],
         ];
-
-        foreach ($services as $service) {
-            Service::create($service);
+        foreach ($services as $svc) {
+            Service::firstOrCreate(['title' => $svc['title']], $svc);
         }
 
-        // Portfolio Items
-        $portfolios = [
+        // Events
+        $events = [
             [
-                'title' => 'Industrial Steel Framework',
-                'slug' => 'industrial-steel-framework',
-                'description' => 'Complete steel framework for manufacturing facility expansion. Over 5000 sq ft of structural steel work.',
-                'client' => 'ABC Manufacturing',
-                'location' => 'Industrial District, City',
-                'completion_date' => '2024-01-15',
-                'techniques_used' => ['MIG Welding', 'Structural Welding', 'Certified Inspection'],
-                'category_id' => 1,
-                'is_featured' => true,
-                'order' => 1,
+                'title'       => 'Advanced Teacher Training Workshop 2025',
+                'excerpt'     => 'A 3-day intensive workshop focusing on modern pedagogical approaches.',
+                'description' => '<p>Join us for a transformative 3-day workshop designed specifically for experienced teachers looking to elevate their practice. This intensive program covers advanced classroom management, differentiated instruction, and assessment strategies.</p><h3>Who Should Attend</h3><p>Teachers with 3+ years of experience, school leaders, and curriculum coordinators.</p>',
+                'start_date'  => now()->addMonth(),
+                'end_date'    => now()->addMonth()->addDays(2),
+                'venue'       => 'Pearl Continental Hotel',
+                'city'        => 'Lahore',
+                'country'     => 'Pakistan',
+                'is_online'   => false,
+                'is_free'     => false,
+                'price'       => 5000,
+                'max_participants' => 50,
+                'status'      => 'upcoming',
             ],
             [
-                'title' => 'Custom Staircase Railing',
-                'slug' => 'custom-staircase-railing',
-                'description' => 'Ornamental stainless steel railing with custom design elements. Modern aesthetic with clean lines.',
-                'client' => 'Residential Client',
-                'location' => 'Downtown Area',
-                'completion_date' => '2023-12-10',
-                'techniques_used' => ['TIG Welding', 'Metal Fabrication', 'Polishing'],
-                'category_id' => 3,
-                'is_featured' => true,
-                'order' => 2,
+                'title'       => 'Digital Classroom: Free Webinar Series',
+                'excerpt'     => 'Free weekly webinars on integrating technology in your classroom.',
+                'description' => '<p>A free 4-week webinar series covering the fundamentals of digital teaching tools and strategies for online engagement.</p>',
+                'start_date'  => now()->addWeek(),
+                'end_date'    => now()->addWeeks(5),
+                'is_online'   => true,
+                'online_link' => 'https://zoom.us/j/example',
+                'is_free'     => true,
+                'price'       => 0,
+                'status'      => 'upcoming',
             ],
             [
-                'title' => 'Warehouse Gate System',
-                'slug' => 'warehouse-gate-system',
-                'description' => 'Heavy-duty sliding gate system with automated mechanism. Designed for high-traffic industrial use.',
-                'client' => 'XYZ Logistics',
-                'location' => 'Warehouse Complex',
-                'completion_date' => '2024-02-01',
-                'techniques_used' => ['Stick Welding', 'Metal Fabrication', 'Installation'],
-                'category_id' => 2,
-                'is_featured' => true,
-                'order' => 3,
+                'title'       => 'National Education Summit 2024',
+                'excerpt'     => 'Annual summit bringing together educators from across Pakistan.',
+                'description' => '<p>The National Education Summit brought together over 500 educators, policymakers, and researchers to discuss the future of education in Pakistan.</p>',
+                'start_date'  => now()->subMonths(3),
+                'end_date'    => now()->subMonths(3)->addDay(),
+                'venue'       => 'Islamabad Convention Center',
+                'city'        => 'Islamabad',
+                'country'     => 'Pakistan',
+                'is_online'   => false,
+                'is_free'     => false,
+                'price'       => 3000,
+                'status'      => 'past',
             ],
         ];
-
-        foreach ($portfolios as $portfolio) {
-            Portfolio::create($portfolio);
+        foreach ($events as $evt) {
+            Event::firstOrCreate(['title' => $evt['title']], $evt);
         }
 
         // Testimonials
         $testimonials = [
-            [
-                'client_name' => 'Ahmed Raza',
-                'client_position' => 'Operations Manager',
-                'client_company' => 'DHA',
-                'testimonial' => 'Excellent welding work on our warehouse structure in Lahore. The team was professional, punctual, and delivered strong, clean finishing. Highly satisfied with the quality and service.',
-                'rating' => 5,
-                'is_featured' => true,
-                'order' => 1,
-            ],
-            [
-                'client_name' => 'Fatima Khan',
-                'client_position' => 'Homeowner',
-                'client_company' => 'G-9, Islamabad',
-                'testimonial' => 'We hired them for custom iron gates and railings for our house in DHA Karachi. The craftsmanship is outstanding and the installation was neat and timely. Highly recommended!',
-                'rating' => 5,
-                'is_featured' => true,
-                'order' => 2,
-            ],
-            [
-                'client_name' => 'Muhammad Usman',
-                'client_position' => 'Factory Supervisor',
-                'client_company' => 'Faisal Steel Works',
-                'testimonial' => 'Very reliable and skilled welders. Our factory shed and safety grills were completed on time with excellent finishing. Great communication throughout the project.',
-                'rating' => 5,
-                'is_featured' => true,
-                'order' => 3,
-            ],
+            ['author_name' => 'Ms. Ayesha Malik', 'author_title' => 'Head of Department', 'author_organization' => 'LGS Paragon', 'content' => 'Awais Iqbal Ch\'s training completely transformed our department\'s approach to teaching. Her practical methodologies and infectious enthusiasm inspired every single teacher on our team. Six months later, we are still seeing remarkable improvements in student outcomes.', 'rating' => 5, 'is_featured' => true, 'sort_order' => 1],
+            ['author_name' => 'Mr. Ahmed Raza', 'author_title' => 'Principal', 'author_organization' => 'Beaconhouse School System', 'content' => 'We invited Awais Iqbal Ch to deliver a keynote at our annual staff development day and the feedback was overwhelming. Teachers described it as the most impactful session they had attended in years. Highly recommend!', 'rating' => 5, 'is_featured' => true, 'sort_order' => 2],
+            ['author_name' => 'Dr. Fatima Hassan', 'author_title' => 'Education Specialist', 'author_organization' => 'UNICEF Pakistan', 'content' => 'Working with Awais Iqbal Ch on our digital learning initiative was an absolute pleasure. Her expertise in EdTech and her ability to communicate complex ideas in simple terms made the entire project a success.', 'rating' => 5, 'is_featured' => true, 'sort_order' => 3],
+            ['author_name' => 'Mr. Usman Shah', 'author_title' => 'Senior Teacher', 'author_organization' => 'Government High School, Faisalabad', 'content' => 'Before attending Awais Iqbal Ch\'s workshop, I felt stuck in my teaching routine. After just two days, I had a toolkit full of new strategies and the confidence to use them. My students have noticed the difference!', 'rating' => 5, 'is_featured' => true, 'sort_order' => 4],
+            ['author_name' => 'Prof. Nadia Aziz', 'author_title' => 'Dean of Education', 'author_organization' => 'University of Education, Lahore', 'content' => 'We have collaborated with Awais Iqbal Ch on multiple curriculum design projects and she consistently delivers exceptional results. Her research-grounded approach and collaborative spirit make her an ideal partner.', 'rating' => 5, 'is_featured' => false, 'sort_order' => 5],
+            ['author_name' => 'Ms. Sara Qureshi', 'author_title' => 'Teacher', 'author_organization' => 'Roots International School', 'content' => 'The motivational talk Awais Iqbal Ch gave at our school changed my perspective entirely. I was on the verge of leaving teaching but she helped me rediscover my passion. I am so grateful!', 'rating' => 5, 'is_featured' => true, 'sort_order' => 6],
         ];
+        foreach ($testimonials as $t) {
+            Testimonial::firstOrCreate(['author_name' => $t['author_name']], $t);
+        }
 
-        foreach ($testimonials as $testimonial) {
-            Testimonial::create($testimonial);
+        // Certificates
+        $certs = [
+            ['title' => 'Certified Teacher Trainer (CTT)', 'issuing_organization' => 'National Teacher Training Academy, Pakistan', 'year' => 2011, 'category' => 'Teaching'],
+            ['title' => 'Cambridge International Certificate for Teachers', 'issuing_organization' => 'Cambridge Assessment International Education', 'year' => 2013, 'category' => 'Teaching'],
+            ['title' => 'Google Certified Educator Level 2', 'issuing_organization' => 'Google for Education', 'year' => 2018, 'category' => 'Digital Learning'],
+            ['title' => 'Microsoft Innovative Educator Expert', 'issuing_organization' => 'Microsoft Education', 'year' => 2019, 'category' => 'Digital Learning'],
+            ['title' => 'Certified Professional Coach (CPC)', 'issuing_organization' => 'International Coach Federation', 'year' => 2020, 'category' => 'Leadership'],
+            ['title' => 'Design Thinking for Education', 'issuing_organization' => 'IDEO.org (Online)', 'year' => 2021, 'category' => 'Leadership'],
+            ['title' => 'Project-Based Learning Certification', 'issuing_organization' => 'Buck Institute for Education', 'year' => 2016, 'category' => 'Teaching'],
+            ['title' => 'Child Protection in Education', 'issuing_organization' => 'UNICEF Online Courses', 'year' => 2022, 'category' => 'Teaching'],
+        ];
+        foreach ($certs as $c) {
+            Certificate::firstOrCreate(['title' => $c['title']], $c);
         }
 
         // Blog Posts
+        $cat1 = Category::where('name', 'Teacher Training')->first();
+        $cat2 = Category::where('name', 'Digital Learning')->first();
         $posts = [
             [
-                'title' => 'The Importance of Certified Welders',
-                'slug' => 'importance-of-certified-welders',
-                'excerpt' => 'Understanding why certification matters in welding and fabrication work.',
-                'content' => '<p>Welding certifications are crucial for ensuring quality, safety, and compliance in construction and manufacturing projects...</p><p>Professional certifications like AWS and ASME demonstrate a welder\'s competency and commitment to industry standards.</p>',
-                'category_id' => 1,
-                'author' => 'Admin',
+                'user_id'      => $user->id,
+                'category_id'  => $cat1->id,
+                'title'        => '5 Evidence-Based Strategies Every Teacher Should Know',
+                'excerpt'      => 'Discover the research-backed teaching strategies that have transformed classrooms across the globe.',
+                'body'         => '<h2>The Science of Effective Teaching</h2><p>In over 15 years of working with educators, I have identified five strategies that consistently produce remarkable results regardless of grade level, subject area, or school context. These are not trends or fads — they are grounded in decades of educational research.</p><h3>1. Retrieval Practice</h3><p>Instead of simply rereading notes, students should regularly retrieve information from memory. This "testing effect" has been shown to dramatically improve long-term retention. Try starting each lesson with 5 quick questions about previous material.</p><h3>2. Spaced Practice</h3><p>Spreading learning over time is far more effective than cramming. Help students create study schedules that revisit material at increasing intervals.</p><h3>3. Interleaving</h3><p>Mix different types of problems or topics within a single study session. While it feels harder, interleaving improves students\' ability to discriminate between problem types and apply the right strategy.</p><h3>4. Elaborative Interrogation</h3><p>Ask students to explain why facts are true, not just what the facts are. "Why does a plant need sunlight?" is more powerful than "What does a plant need?"</p><h3>5. Concrete Examples</h3><p>Abstract concepts become memorable when paired with concrete examples. The more vivid and relatable the example, the better.</p><p>Implement even two of these strategies consistently and I guarantee you will see a difference within a month.</p>',
                 'is_published' => true,
                 'published_at' => now()->subDays(10),
+                'views'        => 342,
             ],
             [
-                'title' => 'MIG vs TIG Welding: Which is Right for Your Project?',
-                'slug' => 'mig-vs-tig-welding',
-                'excerpt' => 'A comprehensive comparison of MIG and TIG welding techniques.',
-                'content' => '<p>Choosing between MIG and TIG welding depends on several factors including material type, thickness, and desired finish quality...</p><p>MIG welding is faster and more forgiving, while TIG offers superior precision and cleaner welds.</p>',
-                'category_id' => 1,
-                'author' => 'Admin',
+                'user_id'      => $user->id,
+                'category_id'  => $cat2->id,
+                'title'        => 'How to Create Engaging Online Lessons That Students Actually Enjoy',
+                'excerpt'      => 'Moving your teaching online doesn\'t mean sacrificing engagement. Here are practical strategies to keep students hooked.',
+                'body'         => '<h2>The Challenge of Online Engagement</h2><p>When I first started conducting online training sessions, I noticed something troubling: after about 20 minutes, participants would start disappearing — not physically, but mentally. Their cameras would remain on but their eyes would glaze over. Sound familiar?</p><p>Over the past four years, I have developed and tested dozens of strategies for maintaining engagement in virtual environments. Here are the ones that work.</p><h3>1. The 10-Minute Rule</h3><p>Break your lesson into 10-minute segments. Every 10 minutes, change the activity — from listening to discussing, from watching to creating.</p><h3>2. Collaborative Annotation</h3><p>Use tools like Jamboard or Padlet to have students annotate documents or images together in real time. This transforms passive viewing into active participation.</h3><h3>3. Breakout Rooms With Clear Tasks</h3><p>Breakout rooms fail when students do not know what to do. Always give a specific, time-bound task with a deliverable to share when they return.</p>',
                 'is_published' => true,
                 'published_at' => now()->subDays(5),
+                'views'        => 218,
             ],
         ];
-
-        foreach ($posts as $post) {
-            BlogPost::create($post);
+        foreach ($posts as $p) {
+            Post::firstOrCreate(['title' => $p['title']], $p);
         }
+
+        $this->command->info('✅ Database seeded successfully!');
+        $this->command->info('👤 Admin: admin@portfolio.com | Password: password');
     }
 }
